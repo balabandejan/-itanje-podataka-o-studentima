@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Studenti</title>
+    <style>
+        #wrapper {
+            background: linear-gradient(#e66465, #9198e5);
+            position: absolute;
+        }
+
+        #txt {
+            width: 250px;
+            height: 450px;
+            padding: 20px 20px;
+            margin: 50px;
+            background-color: #c3c3a7;
+        }
+
+        .click {
+            position: absolute;
+            border: 2px solid black;
+            font-weight: bold;
+            top: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="wrapper">
+    <label for="txt"></label>
+    <textarea id="txt" cols="30"></textarea>
+</div>
+
+<script>
+    let txt = document.getElementById("txt");
+let button = document.createElement("button");
+button.innerHTML = "Get info";
+button.classList.add("click");
+txt.before(button);
+
+class Student {
+    constructor(name, adress, phone, course) {
+        this.name = name;
+        this.adress = adress;
+        this.phone = phone;
+        this.course = course;
+    }
+
+    getInfo() {
+        return "\n" +
+            "Name: " + this.name + "\n" +
+            "Adress: " + this.adress + "\n" +
+            "Phone: " + this.phone + "\n" +
+            "Course: " + this.course + "\n"
+
+    }
+}
+
+async function getData() {
+    try {
+        let response = await fetch('https://v-dresevic.github.io/Advanced-JavaScript-Programming/data/students.txt');
+        if (response.status !== 200) {
+            throw new Error("Error while reading file.");
+        }
+        let text = await response.text();
+        let informacije = text.split("\n");
+        splitLine(informacije);
+
+    } catch (err) {
+        txt.innerHTML = 'Fetch problem: ' + err.message;
+    } finally {
+
+    }
+}
+
+function splitLine(info) {
+    while (info.length > 0) {
+        let x = info.splice(0, 4);
+        let students = new Student(x[0], x[1], x[2], x[3]);
+        txt.innerHTML += students.getInfo();
+    }
+}
+
+button.addEventListener("click", function () {
+    getData();
+    document.getElementById("txt").innerHTML = "";
+});
+</script>
+</body>
+</html>
